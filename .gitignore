@@ -1,0 +1,15 @@
+
+
+# Dependency
+vendor/
+.idea/
+.vscode/
+
+
+# Output
+*.log
+log/
+bin/
+
+# Test
+cmd/example
