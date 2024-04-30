@@ -1,23 +1,39 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"log"
-	param "payment/param/tax"
-	storage "payment/repository/storage/tax"
-	service "payment/service/tax"
-	"payment/storage/parser/csv"
+	"payment/config"
+	"payment/delivery/http_server"
+	iplookupstorage "payment/repository/storage/ip_lookup"
+	binaryparser "payment/repository/storage/parser/binary"
+	csvparser "payment/repository/storage/parser/csv"
+	purchasestorage "payment/repository/storage/purchase"
+	taxstorage "payment/repository/storage/tax"
+	iplookupsvc "payment/service/ip_lookup"
+	purchaseservice "payment/service/purchase"
+	taxservice "payment/service/tax"
 )
 
 func main() {
-	csvParser := parser.New()
-	repo := storage.New(storage.NewConfig("./storage/tax/tax.csv"), csvParser)
-	svc := service.New(repo)
-	ctx := context.Background()
-	resp, gErr := svc.Get(ctx, param.GetTaxRequest{Country: "germany"})
-	if gErr != nil {
-		log.Fatalln(gErr)
+
+	config := config.Get()
+	purchaseSvc, ipLookupSvc := setupServices(config)
+	server := httpserver.New(config.HttpServer, purchaseSvc, ipLookupSvc)
+	if rErr := server.Run(); rErr != nil {
+		log.Fatalln(rErr)
 	}
-	fmt.Println(resp.Tax)
+
+}
+
+func setupServices(config config.Config) (purchaseservice.Service, iplookupsvc.Service) {
+	ipLookupSvc := iplookupsvc.New(
+		config.IPLookupSvc,
+		iplookupstorage.New(config.IPLookupSvc.Storage, binaryparser.New()),
+	)
+	purchaseSvc := purchaseservice.New(
+		config.PurchaseSvc,
+		purchasestorage.New(config.PurchaseSvc.Storage, csvparser.New()),
+		taxservice.New(config.TaxSvc, taxstorage.New(config.TaxSvc.Storage, csvparser.New())),
+	)
+	return purchaseSvc, ipLookupSvc
 }

@@ -5,5 +5,54 @@
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "34568048"
 	},
-	"item": []
+	"item": [
+		{
+			"name": "Purchase",
+			"item": [
+				{
+					"name": "Get Price",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8585/purchases/items/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8585",
+							"path": [
+								"purchases",
+								"items",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8585",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8585"
+				}
+			},
+			"response": []
+		}
+	]
 }
