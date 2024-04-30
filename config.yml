@@ -1,0 +1,16 @@
+
+
+http_server:
+  port: 8585
+
+tax_service:
+  storage:
+    path: "storage/tax.tax.csv"
+
+purchase_service:
+  storage:
+    path: "storage/purchase.item.csv"
+
+ip_lookup_service:
+  storage:
+    path: "storage/ip_lookup.ip_country.bin"
